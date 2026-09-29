@@ -1,0 +1,182 @@
+{
+  "version": 1,
+  "name": "hw1-3",
+  "savedAt": "2026-09-28T15:03:05.187Z",
+  "tables": [
+    {
+      "id": "bqp9z2v",
+      "name": "TEAM",
+      "fields": [
+        {
+          "id": "czu557q",
+          "name": "id",
+          "primary": true
+        },
+        {
+          "id": "11bi83d",
+          "name": "name",
+          "primary": false
+        },
+        {
+          "id": "bzyteml",
+          "name": "location",
+          "primary": false
+        }
+      ]
+    },
+    {
+      "id": "c83lwnr",
+      "name": "PLAYER",
+      "fields": [
+        {
+          "id": "fmc2xsa",
+          "name": "id",
+          "primary": true
+        },
+        {
+          "id": "tfuonn5",
+          "name": "jersey_number",
+          "primary": false
+        },
+        {
+          "id": "hblr7ss",
+          "name": "name",
+          "primary": false
+        },
+        {
+          "id": "c1mlbee",
+          "name": "annual_salary",
+          "primary": false
+        },
+        {
+          "id": "ziugzby",
+          "name": "team_id",
+          "primary": false
+        }
+      ]
+    },
+    {
+      "id": "v7qp3uu",
+      "name": "PLAYER_POSITION",
+      "fields": [
+        {
+          "id": "vxmpa63",
+          "name": "player_id",
+          "primary": true
+        },
+        {
+          "id": "fv1gobm",
+          "name": "position",
+          "primary": true
+        }
+      ]
+    },
+    {
+      "id": "htxxz52",
+      "name": "GAME",
+      "fields": [
+        {
+          "id": "p60zfy9",
+          "name": "id",
+          "primary": true
+        },
+        {
+          "id": "5i3jz6e",
+          "name": "date",
+          "primary": false
+        },
+        {
+          "id": "b1yigc0",
+          "name": "location",
+          "primary": false
+        },
+        {
+          "id": "l2ubjfr",
+          "name": "home-team_score",
+          "primary": false
+        },
+        {
+          "id": "ku3vaqh",
+          "name": "away-team_score",
+          "primary": false
+        },
+        {
+          "id": "edf1za5",
+          "name": "home-team_id",
+          "primary": false
+        },
+        {
+          "id": "js1o3hj",
+          "name": "away-team_id",
+          "primary": false
+        }
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "1te6xnl",
+      "from": {
+        "tableId": "v7qp3uu",
+        "fieldId": "vxmpa63"
+      },
+      "to": {
+        "tableId": "c83lwnr",
+        "fieldId": "fmc2xsa"
+      },
+      "route": {
+        "trackOffset": -28,
+        "sourceGap": 20,
+        "targetGap": 20
+      }
+    },
+    {
+      "id": "zk8nuv0",
+      "from": {
+        "tableId": "htxxz52",
+        "fieldId": "edf1za5"
+      },
+      "to": {
+        "tableId": "bqp9z2v",
+        "fieldId": "czu557q"
+      },
+      "route": {
+        "trackOffset": -43,
+        "sourceGap": 20,
+        "targetGap": 44.8485107421875
+      }
+    },
+    {
+      "id": "f0j9e3p",
+      "from": {
+        "tableId": "htxxz52",
+        "fieldId": "js1o3hj"
+      },
+      "to": {
+        "tableId": "bqp9z2v",
+        "fieldId": "czu557q"
+      },
+      "route": {
+        "trackOffset": -40.6060791015625,
+        "sourceGap": 35.1514892578125,
+        "targetGap": 29.69696044921875
+      }
+    },
+    {
+      "id": "4k6a812",
+      "from": {
+        "tableId": "c83lwnr",
+        "fieldId": "ziugzby"
+      },
+      "to": {
+        "tableId": "bqp9z2v",
+        "fieldId": "czu557q"
+      },
+      "route": {
+        "trackOffset": -73,
+        "sourceGap": 20,
+        "targetGap": 60
+      }
+    }
+  ]
+}

@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f3ee">
+  <title>Database Diagram Maker</title>
+  <link rel="stylesheet" href="styles.css?v=17">
+  <link rel="stylesheet" href="er-styles.css?v=4">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand-block">
+      <p class="eyebrow" id="editor-eyebrow">RELATIONAL SCHEMA</p>
+      <h1>Diagram Maker</h1>
+      <nav class="mode-tabs" aria-label="Diagram 類型">
+        <button class="mode-tab active" type="button" data-editor-mode="relational">Relational</button>
+        <button class="mode-tab" type="button" data-editor-mode="er">ER Diagram</button>
+      </nav>
+    </div>
+    <div class="header-actions" id="relational-actions">
+      <input class="current-file-name" id="relational-file-name" value="未命名" maxlength="80" aria-label="目前檔案名稱" title="修改後按儲存會開啟另存新檔">
+      <div class="history-actions"><button class="round-action" id="undo-diagram" type="button" title="上一步" aria-label="上一步" disabled>↶</button><button class="round-action" id="redo-diagram" type="button" title="下一步" aria-label="下一步" disabled>↷</button></div>
+      <button class="button" id="save-diagram" type="button">儲存</button>
+      <button class="button" id="save-as-diagram" type="button">另存新檔</button>
+      <button class="button" id="new-diagram" type="button">新增</button>
+      <button class="button" id="open-diagram" type="button">開啟</button>
+      <button class="button" id="export-open" type="button">↓ 匯出圖片</button>
+    </div>
+    <div class="header-actions" id="er-actions" hidden>
+      <input class="current-file-name" id="er-current-file-name" value="未命名" maxlength="80" aria-label="目前檔案名稱" title="修改後按儲存會開啟另存新檔">
+      <div class="history-actions"><button class="round-action" id="er-undo" type="button" title="上一步" aria-label="上一步" disabled>↶</button><button class="round-action" id="er-redo" type="button" title="下一步" aria-label="下一步" disabled>↷</button></div>
+      <button class="button" id="er-save" type="button">儲存</button>
+      <button class="button" id="er-save-as" type="button">另存新檔</button>
+      <button class="button" id="er-new" type="button">新增</button>
+      <button class="button" id="er-open" type="button">開啟</button>
+      <button class="button" id="er-export-open" type="button">↓ 匯出圖片</button>
+    </div>
+  </header>
+
+  <main class="workspace-shell" id="relational-workspace">
+    <aside class="side-panel">
+      <section>
+        <p class="section-label">操作</p>
+        <div class="side-primary-actions">
+          <button class="button button-primary" id="add-table" type="button">＋ 新增 Table</button>
+          <button class="button" id="reference-mode" type="button" aria-pressed="false">↗ Reference</button>
+        </div>
+        <p class="hint">Table 會依清單順序自動排列。欄位只需調整左右順序，不必拖曳定位。</p>
+      </section>
+
+      <section class="status-card" id="reference-status" aria-live="polite" hidden></section>
+
+      <section>
+        <div class="section-heading">
+          <p class="section-label">Tables</p>
+          <span id="table-count">0</span>
+        </div>
+        <div id="table-list" class="table-list"></div>
+      </section>
+
+      <section>
+        <div class="section-heading">
+          <p class="section-label">Reference 清單</p>
+          <span id="reference-count">0</span>
+        </div>
+        <div id="reference-list" class="reference-list"></div>
+      </section>
+
+      <section class="keyboard-help">
+        <p class="section-label">小提示</p>
+        <p><kbd>Ctrl</kbd> + <kbd>S</kbd> 儲存</p>
+        <p><kbd>Ctrl</kbd> + <kbd>Z</kbd> 上一步</p>
+        <p><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd> 下一步</p>
+        <p><kbd>Delete</kbd> 刪除選取的 Reference</p>
+        <p><kbd>Esc</kbd> 取消 Reference 模式或線路選取</p>
+        <p>水平線菱形可上下移，垂直線菱形可左右移</p>
+      </section>
+    </aside>
+
+    <section class="canvas-wrap" id="canvas-wrap">
+      <div class="canvas-toolbar">
+        <span id="diagram-summary">0 tables · 0 columns</span>
+        <button class="text-button" id="fit-view" type="button">適合畫面</button>
+      </div>
+      <div class="diagram-viewport" id="diagram-viewport">
+        <div class="diagram" id="diagram" aria-label="Relational schema diagram">
+          <svg class="connections" id="connections" aria-hidden="true">
+            <defs>
+              <marker id="arrowhead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path>
+              </marker>
+            </defs>
+            <g id="connection-paths"></g>
+          </svg>
+          <div class="connection-controls" id="connection-controls" aria-hidden="true"></div>
+          <div id="tables" class="tables"></div>
+          <div class="empty-state" id="empty-state">
+            <div class="empty-icon">R</div>
+            <h2>建立第一個 Table</h2>
+            <p>可直接開始編輯；第一次儲存時再選擇檔案位置。</p>
+            <button class="button button-primary" id="empty-add" type="button">＋ 新增 Table</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <main class="workspace-shell er-workspace" id="er-workspace" hidden>
+    <aside class="side-panel er-side-panel">
+      <section>
+        <p class="section-label">操作</p>
+        <div class="side-primary-actions">
+          <button class="button button-primary" id="er-add-entity" type="button">＋ 新增物件</button>
+          <button class="button" id="er-connect-mode" type="button" aria-pressed="false">／ 連線</button>
+        </div>
+      </section>
+      <section>
+        <p class="section-label">建立核心物件</p>
+        <div class="er-tool-grid">
+          <button type="button" data-er-create="entity"><span class="er-tool-symbol rectangle"></span>Entity</button>
+          <button type="button" data-er-create="weakEntity"><span class="er-tool-symbol double-rectangle"></span>Weak entity</button>
+          <button type="button" data-er-create="relationship"><span class="er-tool-symbol diamond"></span>Relationship</button>
+          <button type="button" data-er-create="identifyingRelationship"><span class="er-tool-symbol double-diamond"></span>Identifying</button>
+        </div>
+      </section>
+      <section>
+        <p class="section-label">建立 Attribute</p>
+        <p class="hint">先選取 owner，再建立 attribute，系統會自動連線與排列。</p>
+        <div class="er-tool-grid">
+          <button type="button" data-er-create="attribute"><span class="er-tool-symbol ellipse"></span>Attribute</button>
+          <button type="button" data-er-create="multivalued"><span class="er-tool-symbol double-ellipse"></span>Multivalued</button>
+          <button type="button" data-er-create="derived"><span class="er-tool-symbol dashed-ellipse"></span>Derived</button>
+          <button type="button" data-er-create="composite"><span class="er-tool-symbol ellipse"></span>Composite</button>
+        </div>
+      </section>
+      <section class="status-card" id="er-status" aria-live="polite" hidden></section>
+      <section>
+        <p class="section-label">選取項目</p>
+        <div id="er-inspector" class="er-inspector"><p class="reference-empty">尚未選取物件</p></div>
+      </section>
+      <section>
+        <p class="section-label">排版</p>
+        <div class="er-layout-actions">
+          <button class="button" id="er-arrange" type="button">整理未鎖定物件</button>
+          <button class="button" id="er-unlock-all" type="button">解除全部鎖定</button>
+        </div>
+      </section>
+      <section class="keyboard-help">
+        <p class="section-label">快捷鍵</p>
+        <p><kbd>Ctrl</kbd> + <kbd>S</kbd> 儲存</p>
+        <p><kbd>Ctrl</kbd> + <kbd>Z</kbd> 上一步</p>
+        <p><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd> 下一步</p>
+        <p><kbd>Esc</kbd> 取消模式／選取</p>
+        <p><kbd>Delete</kbd> 刪除選取項目</p>
+        <p>拖曳物件後會自動鎖定位置</p>
+      </section>
+    </aside>
+    <section class="canvas-wrap">
+      <div class="canvas-toolbar">
+        <span id="er-summary">0 objects · 0 connections</span>
+        <span class="er-legend">拖曳可微調 · 藍色表示已選取</span>
+      </div>
+      <div class="diagram-viewport er-viewport" id="er-viewport">
+        <svg class="er-canvas" id="er-canvas" width="1400" height="900" viewBox="0 0 1400 900" aria-label="Entity relationship diagram">
+          <g id="er-edge-layer"></g>
+          <g id="er-node-layer"></g>
+        </svg>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="table-dialog">
+    <form method="dialog" id="table-form">
+      <div class="dialog-heading">
+        <p class="eyebrow">NEW TABLE</p>
+        <button class="icon-button" value="cancel" aria-label="關閉" formnovalidate>×</button>
+      </div>
+      <label for="table-name">Table 名稱</label>
+      <input id="table-name" name="table-name" autocomplete="off" placeholder="例如 EMPLOYEE" maxlength="40" required>
+      <div class="dialog-actions">
+        <button class="button" value="cancel" formnovalidate>取消</button>
+        <button class="button button-primary" value="default">建立 Table</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="export-dialog">
+    <form method="dialog" id="export-form">
+      <div class="dialog-heading">
+        <div>
+          <p class="eyebrow">EXPORT PNG</p>
+          <h2>匯出 Diagram</h2>
+        </div>
+        <button class="icon-button" value="cancel" aria-label="關閉" formnovalidate>×</button>
+      </div>
+      <fieldset>
+        <legend>背景</legend>
+        <label class="radio-card"><input type="radio" name="background" value="white" checked><span><strong>白色</strong><small>適合文件與作業</small></span></label>
+        <label class="radio-card"><input type="radio" name="background" value="transparent"><span><strong>透明</strong><small>適合簡報與合成</small></span></label>
+      </fieldset>
+      <p class="export-note">圖片會自動裁切至完整 diagram 外圍 24 px。</p>
+      <div class="dialog-actions">
+        <button class="button" value="cancel" formnovalidate>取消</button>
+        <button class="button button-primary" id="export-png" value="default">下載 PNG</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="er-object-dialog">
+    <form method="dialog" id="er-object-form">
+      <div class="dialog-heading"><div><p class="eyebrow">NEW ER OBJECT</p><h2 id="er-object-title">新增物件</h2></div><button class="icon-button" value="cancel" aria-label="關閉" formnovalidate>×</button></div>
+      <label for="er-object-type">物件類型</label>
+      <select id="er-object-type" name="er-object-type">
+        <option value="entity">Entity</option><option value="weakEntity">Weak entity</option>
+        <option value="relationship">Relationship</option><option value="identifyingRelationship">Identifying relationship</option>
+        <option value="attribute">Attribute</option><option value="multivalued">Multivalued attribute</option>
+        <option value="derived">Derived attribute</option><option value="composite">Composite attribute</option>
+      </select>
+      <label for="er-object-name">名稱</label>
+      <input id="er-object-name" autocomplete="off" placeholder="例如 EMPLOYEE" maxlength="50" required>
+      <p class="export-note" id="er-owner-note">若已選取 owner，attribute 將自動與它連線。</p>
+      <div class="dialog-actions"><button class="button" value="cancel" formnovalidate>取消</button><button class="button button-primary" value="default">建立物件</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="er-export-dialog">
+    <form method="dialog" id="er-export-form">
+      <div class="dialog-heading"><div><p class="eyebrow">EXPORT ER PNG</p><h2>匯出 ER Diagram</h2></div><button class="icon-button" value="cancel" aria-label="關閉" formnovalidate>×</button></div>
+      <fieldset><legend>背景</legend><label class="radio-card"><input type="radio" name="er-background" value="white" checked><span><strong>白色</strong><small>適合文件與作業</small></span></label><label class="radio-card"><input type="radio" name="er-background" value="transparent"><span><strong>透明</strong><small>適合簡報與合成</small></span></label></fieldset>
+      <p class="export-note">只輸出完整 ER diagram，不包含格線與編輯控制。</p>
+      <div class="dialog-actions"><button class="button" value="cancel" formnovalidate>取消</button><button class="button button-primary" value="default">下載 PNG</button></div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status"></div>
+  <script src="file-access.js?v=2"></script>
+  <script src="app.js?v=19"></script>
+  <script src="er-app.js?v=13"></script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "name": "relational-diagram",
+  "savedAt": "2026-09-28T07:33:54.256Z",
+  "tables": [
+    {
+      "id": "smve7q3",
+      "name": "STORE",
+      "fields": [
+        {
+          "id": "wgts56z",
+          "name": "id",
+          "primary": true
+        },
+        {
+          "id": "24o0gae",
+          "name": "postal_code",
+          "primary": false
+        },
+        {
+          "id": "3c116h1",
+          "name": "manager_id",
+          "primary": false
+        },
+        {
+          "id": "9zqca7d",
+          "name": "",
+          "primary": false
+        }
+      ]
+    },
+    {
+      "id": "mies6et",
+      "name": "EMPLOYEE",
+      "fields": [
+        {
+          "id": "z3kc2sz",
+          "name": "id",
+          "primary": true
+        },
+        {
+          "id": "j1mmpos",
+          "name": "name",
+          "primary": false
+        },
+        {
+          "id": "ziq06qa",
+          "name": "store_id",
+          "primary": false
+        }
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "z4trwi7",
+      "from": {
+        "tableId": "mies6et",
+        "fieldId": "ziq06qa"
+      },
+      "to": {
+        "tableId": "smve7q3",
+        "fieldId": "wgts56z"
+      },
+      "offset": 0
+    }
+  ]
+}

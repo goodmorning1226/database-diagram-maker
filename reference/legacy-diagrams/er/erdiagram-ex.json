@@ -1,0 +1,314 @@
+{
+  "diagramType": "er",
+  "version": 1,
+  "name": "erdiagram-ex",
+  "savedAt": "2026-09-28T10:23:36.662Z",
+  "nodes": [
+    {
+      "id": "team",
+      "type": "entity",
+      "name": "TEAM",
+      "x": 678,
+      "y": 400,
+      "pinned": false,
+      "keyKind": "none"
+    },
+    {
+      "id": "player",
+      "type": "weakEntity",
+      "name": "PLAYER",
+      "x": 360,
+      "y": 400,
+      "pinned": false,
+      "keyKind": "none"
+    },
+    {
+      "id": "game",
+      "type": "weakEntity",
+      "name": "GAME",
+      "x": 1063,
+      "y": 400,
+      "pinned": false,
+      "keyKind": "none"
+    },
+    {
+      "id": "join",
+      "type": "identifyingRelationship",
+      "name": "JOIN",
+      "x": 519,
+      "y": 400,
+      "pinned": false,
+      "keyKind": "none"
+    },
+    {
+      "id": "play-home",
+      "type": "identifyingRelationship",
+      "name": "PLAY_AS_HOME",
+      "x": 870.5,
+      "y": 260,
+      "pinned": false,
+      "keyKind": "none"
+    },
+    {
+      "id": "play-away",
+      "type": "identifyingRelationship",
+      "name": "PLAY_AS_AWAY",
+      "x": 870.5,
+      "y": 540,
+      "pinned": false,
+      "keyKind": "none"
+    },
+    {
+      "id": "team-name",
+      "type": "attribute",
+      "name": "name",
+      "x": 678,
+      "y": 280,
+      "pinned": false,
+      "keyKind": "key"
+    },
+    {
+      "id": "team-location",
+      "type": "attribute",
+      "name": "location",
+      "x": 678,
+      "y": 520,
+      "pinned": false,
+      "keyKind": "none"
+    },
+    {
+      "id": "player-name",
+      "type": "attribute",
+      "name": "name",
+      "x": 152,
+      "y": 496,
+      "pinned": true,
+      "keyKind": "none"
+    },
+    {
+      "id": "player-jersey",
+      "type": "attribute",
+      "name": "jersey_number",
+      "x": 161,
+      "y": 298,
+      "pinned": false,
+      "keyKind": "partial"
+    },
+    {
+      "id": "player-position",
+      "type": "multivalued",
+      "name": "position",
+      "x": 360,
+      "y": 264,
+      "pinned": true,
+      "keyKind": "none"
+    },
+    {
+      "id": "player-salary",
+      "type": "attribute",
+      "name": "annual_salary",
+      "x": 360,
+      "y": 536,
+      "pinned": true,
+      "keyKind": "none"
+    },
+    {
+      "id": "game-home-score",
+      "type": "attribute",
+      "name": "home-team_score",
+      "x": 1272.5,
+      "y": 400,
+      "pinned": false,
+      "keyKind": "none"
+    },
+    {
+      "id": "game-location",
+      "type": "attribute",
+      "name": "location",
+      "x": 888,
+      "y": 400,
+      "pinned": false,
+      "keyKind": "none"
+    },
+    {
+      "id": "game-date",
+      "type": "attribute",
+      "name": "date",
+      "x": 1136,
+      "y": 298,
+      "pinned": false,
+      "keyKind": "partial"
+    },
+    {
+      "id": "game-away-score",
+      "type": "attribute",
+      "name": "away-team_score",
+      "x": 1168,
+      "y": 502,
+      "pinned": false,
+      "keyKind": "none"
+    }
+  ],
+  "connections": [
+    {
+      "id": "c-player-join",
+      "from": "join",
+      "to": "player",
+      "participation": "total",
+      "cardinality": "N",
+      "labelSide": "above",
+      "labelPosition": 0.28,
+      "roleName": ""
+    },
+    {
+      "id": "c-join-team",
+      "from": "join",
+      "to": "team",
+      "participation": "partial",
+      "cardinality": "1",
+      "labelSide": "above",
+      "labelPosition": 0.28,
+      "roleName": ""
+    },
+    {
+      "id": "c-team-home",
+      "from": "play-home",
+      "to": "team",
+      "participation": "partial",
+      "cardinality": "1",
+      "labelSide": "above",
+      "labelPosition": 0.26,
+      "roleName": ""
+    },
+    {
+      "id": "c-home-game",
+      "from": "play-home",
+      "to": "game",
+      "participation": "total",
+      "cardinality": "N",
+      "labelSide": "above",
+      "labelPosition": 0.26,
+      "roleName": ""
+    },
+    {
+      "id": "c-team-away",
+      "from": "play-away",
+      "to": "team",
+      "participation": "partial",
+      "cardinality": "1",
+      "labelSide": "above",
+      "labelPosition": 0.26,
+      "roleName": ""
+    },
+    {
+      "id": "c-away-game",
+      "from": "play-away",
+      "to": "game",
+      "participation": "total",
+      "cardinality": "N",
+      "labelSide": "above",
+      "labelPosition": 0.26,
+      "roleName": ""
+    },
+    {
+      "id": "c-team-name",
+      "from": "team",
+      "to": "team-name",
+      "participation": "partial",
+      "cardinality": "",
+      "labelSide": "above",
+      "labelPosition": 0.23,
+      "roleName": ""
+    },
+    {
+      "id": "c-team-location",
+      "from": "team",
+      "to": "team-location",
+      "participation": "partial",
+      "cardinality": "",
+      "labelSide": "above",
+      "labelPosition": 0.23,
+      "roleName": ""
+    },
+    {
+      "id": "c-player-name",
+      "from": "player",
+      "to": "player-name",
+      "participation": "partial",
+      "cardinality": "",
+      "labelSide": "above",
+      "labelPosition": 0.23,
+      "roleName": ""
+    },
+    {
+      "id": "c-player-jersey",
+      "from": "player",
+      "to": "player-jersey",
+      "participation": "partial",
+      "cardinality": "",
+      "labelSide": "above",
+      "labelPosition": 0.23,
+      "roleName": ""
+    },
+    {
+      "id": "c-player-position",
+      "from": "player",
+      "to": "player-position",
+      "participation": "partial",
+      "cardinality": "",
+      "labelSide": "above",
+      "labelPosition": 0.23,
+      "roleName": ""
+    },
+    {
+      "id": "c-player-salary",
+      "from": "player",
+      "to": "player-salary",
+      "participation": "partial",
+      "cardinality": "",
+      "labelSide": "above",
+      "labelPosition": 0.23,
+      "roleName": ""
+    },
+    {
+      "id": "c-game-home-score",
+      "from": "game",
+      "to": "game-home-score",
+      "participation": "partial",
+      "cardinality": "",
+      "labelSide": "above",
+      "labelPosition": 0.23,
+      "roleName": ""
+    },
+    {
+      "id": "c-game-location",
+      "from": "game",
+      "to": "game-location",
+      "participation": "partial",
+      "cardinality": "",
+      "labelSide": "above",
+      "labelPosition": 0.23,
+      "roleName": ""
+    },
+    {
+      "id": "c-game-date",
+      "from": "game",
+      "to": "game-date",
+      "participation": "partial",
+      "cardinality": "",
+      "labelSide": "above",
+      "labelPosition": 0.23,
+      "roleName": ""
+    },
+    {
+      "id": "c-game-away-score",
+      "from": "game",
+      "to": "game-away-score",
+      "participation": "partial",
+      "cardinality": "",
+      "labelSide": "above",
+      "labelPosition": 0.23,
+      "roleName": ""
+    }
+  ]
+}

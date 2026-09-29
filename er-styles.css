@@ -1,0 +1,63 @@
+[hidden] { display: none !important; }
+
+.er-side-panel { gap: 21px; }
+.er-tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 9px; }
+.er-tool-grid button {
+  min-height: 54px; padding: 7px 5px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 5px; border: 1px solid var(--line); border-radius: 7px; background: #faf9f5; cursor: pointer; color: var(--ink); font-size: 9px;
+}
+.er-tool-grid button:hover { border-color: #949087; background: white; }
+.er-tool-grid button:disabled { opacity: .42; cursor: default; }
+.er-tool-symbol { display: block; width: 27px; height: 15px; border: 1.4px solid currentColor; background: #e8e8e6; }
+.er-tool-symbol.double-rectangle { box-shadow: inset 0 0 0 2px #e8e8e6, inset 0 0 0 3.2px currentColor; }
+.er-tool-symbol.ellipse { border-radius: 50%; }
+.er-tool-symbol.double-ellipse { border-radius: 50%; box-shadow: inset 0 0 0 2px #e8e8e6, inset 0 0 0 3.2px currentColor; }
+.er-tool-symbol.dashed-ellipse { border-radius: 50%; border-style: dashed; }
+.er-tool-symbol.diamond, .er-tool-symbol.double-diamond { width: 20px; height: 20px; transform: rotate(45deg); }
+.er-tool-symbol.double-diamond { box-shadow: inset 0 0 0 2px #e8e8e6, inset 0 0 0 3.2px currentColor; }
+.er-layout-actions { display: grid; gap: 6px; margin-top: 9px; }
+.er-layout-actions .button { width: 100%; font-size: 11px; }
+.er-legend { color: var(--muted); font-size: 10px; }
+.er-viewport { min-height: 0; }
+.er-canvas { display: block; min-width: 100%; min-height: 100%; background: transparent; overflow: visible; touch-action: none; }
+
+.er-node { cursor: grab; }
+.er-node:active { cursor: grabbing; }
+.er-node .shape { fill: #e8e8e6; stroke: #171717; stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.er-node .inner-shape { fill: none; stroke: #171717; stroke-width: 1.2; vector-effect: non-scaling-stroke; }
+.er-node .derived-shape { stroke-dasharray: 7 5; }
+.er-node text { font-family: "Noto Serif CJK TC", "Noto Serif TC", Georgia, serif; font-size: 12pt; pointer-events: none; dominant-baseline: middle; text-anchor: middle; }
+.er-node.selected .shape, .er-node.selected .inner-shape { stroke: var(--accent); stroke-width: 2; }
+.er-node.connect-source .shape, .er-node.connect-source .inner-shape { stroke: var(--accent); fill: #e9edff; stroke-width: 2.2; }
+.er-key-line { stroke: #171717; stroke-width: 1.4; }
+.er-key-line.partial { stroke-dasharray: 4 3; }
+.er-node.selected .er-key-line { stroke: var(--accent); }
+.er-pin { fill: var(--accent); stroke: white; stroke-width: 1; }
+
+.er-edge-visible { fill: none; stroke: #171717; stroke-width: 1.5; vector-effect: non-scaling-stroke; pointer-events: none; }
+.er-edge-hit { fill: none; stroke: #000; stroke-opacity: .001; stroke-width: 20; pointer-events: stroke; cursor: pointer; vector-effect: non-scaling-stroke; }
+.er-edge.selected .er-edge-visible { stroke: var(--accent); stroke-width: 2; }
+.er-edge-label { font: italic 12pt "Noto Serif CJK TC", "Noto Serif TC", Georgia, serif; fill: #171717; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+.er-edge-role { font: 12pt "Noto Serif CJK TC", "Noto Serif TC", Georgia, serif; fill: #444; text-anchor: middle; pointer-events: none; }
+.er-edge.selected .er-edge-label, .er-edge.selected .er-edge-role { fill: var(--accent); }
+
+.er-inspector { margin-top: 9px; }
+.er-property { margin-bottom: 10px; }
+.er-property label { display: block; margin-bottom: 5px; color: var(--muted); font-size: 10px; font-weight: 650; }
+.er-property input, .er-property select {
+  width: 100%; padding: 7px 8px; border: 1px solid var(--line); border-radius: 5px; background: white; outline: none; font: 11px var(--sans);
+}
+.er-property input:focus, .er-property select:focus { border-color: var(--accent); }
+.er-inline-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; }
+.er-inline-options.three { grid-template-columns: repeat(3, 1fr); }
+.er-option {
+  padding: 6px 4px; border: 1px solid var(--line); border-radius: 5px; background: #faf9f5; cursor: pointer; text-align: center; font-size: 10px;
+}
+.er-option.active { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+.er-inspector-actions { display: flex; gap: 6px; margin-top: 12px; }
+.er-inspector-actions .button { flex: 1; min-height: 31px; padding: 5px 7px; font-size: 10px; }
+.er-danger { color: var(--danger); }
+
+@media (max-width: 920px) {
+  .er-tool-grid { grid-template-columns: 1fr; }
+}
