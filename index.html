@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f5f3ee">
   <title>Database Diagram Maker</title>
-  <link rel="stylesheet" href="styles.css?v=18">
+  <link rel="stylesheet" href="styles.css?v=20">
   <link rel="stylesheet" href="er-styles.css?v=4">
 </head>
 <body>
@@ -177,7 +177,7 @@
         <button class="icon-button" value="cancel" aria-label="關閉" formnovalidate>×</button>
       </div>
       <label for="table-name">Table 名稱</label>
-      <input id="table-name" name="table-name" autocomplete="off" placeholder="例如 EMPLOYEE" maxlength="40" required>
+      <textarea id="table-name" name="table-name" rows="1" wrap="soft" autocomplete="off" placeholder="例如 EMPLOYEE" required></textarea>
       <div class="dialog-actions">
         <button class="button" value="cancel" formnovalidate>取消</button>
         <button class="button button-primary" value="default">建立 Table</button>
@@ -235,7 +235,7 @@
 
   <div class="toast" id="toast" role="status"></div>
   <script src="file-access.js?v=2"></script>
-  <script src="app.js?v=20"></script>
+  <script src="app.js?v=22"></script>
   <script src="er-app.js?v=13"></script>
 </body>
 </html>

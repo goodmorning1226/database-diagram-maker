@@ -139,7 +139,7 @@ kbd { padding: 1px 5px; border: 1px solid var(--line); border-radius: 4px; backg
 .table-block { position: relative; display: inline-flex; flex-direction: column; align-items: flex-start; pointer-events: auto; }
 .table-topline { min-width: 100%; height: 24px; display: flex; align-items: flex-start; }
 .table-name {
-  max-width: 420px; padding: 0; border: 0; outline: 0; background: transparent;
+  min-width: 150px; padding: 0; border: 0; outline: 0; background: transparent;
   color: #111; font: 700 14pt/1.1 var(--sans); text-transform: uppercase;
 }
 .mini-button { width: 24px; height: 21px; padding: 0; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); color: var(--muted); cursor: pointer; font-size: 11px; }
@@ -211,9 +211,10 @@ dialog form { padding: 20px; }
 .dialog-heading h2 { margin: 2px 0 0; font: 600 22px var(--serif); }
 .dialog-heading .icon-button { font-size: 24px; line-height: 1; }
 dialog label:not(.radio-card) { display: block; margin-bottom: 7px; font-size: 12px; font-weight: 600; }
-dialog input[type="text"], dialog input:not([type]) { width: 100%; padding: 11px 12px; border: 1px solid var(--line); border-radius: 7px; outline: 0; font-family: var(--mono); }
+dialog input[type="text"], dialog input:not([type]), dialog textarea { width: 100%; padding: 11px 12px; border: 1px solid var(--line); border-radius: 7px; outline: 0; font-family: var(--mono); }
+dialog textarea { min-height: 43px; max-height: 180px; line-height: 1.45; resize: none; overflow-y: auto; }
 dialog select { width: 100%; margin-bottom: 14px; padding: 11px 12px; border: 1px solid var(--line); border-radius: 7px; outline: 0; background: white; font-family: var(--sans); }
-dialog input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,72,216,.11); }
+dialog input:focus, dialog textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,72,216,.11); }
 .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 22px; }
 fieldset { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0; border: 0; }
 legend { margin-bottom: 8px; font-size: 12px; font-weight: 600; }

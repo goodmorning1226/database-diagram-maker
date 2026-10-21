@@ -8,6 +8,8 @@
   const TRACK_MIN_GAP = 16;
   const state = { tables: [], references: [] };
   const files = window.diagramFileAccess;
+  const textMeasureCanvas = document.createElement("canvas");
+  const textMeasureContext = textMeasureCanvas.getContext("2d");
 
   const els = {
     tables: document.querySelector("#tables"),
@@ -99,13 +101,23 @@
   function escapeHtml(value) {
     return String(value).replace(/[&<>'"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[c]));
   }
-  function fieldWidth(name) { return Math.max(108, Math.min(280, 34 + [...(name || "欄位名稱")].length * 12)); }
+  function measuredTextWidth(text, font, fallbackPerCharacter) {
+    if (!textMeasureContext) return [...String(text)].length * fallbackPerCharacter;
+    textMeasureContext.font = font;
+    return textMeasureContext.measureText(String(text)).width;
+  }
+  function fieldWidth(name) {
+    return Math.max(108, Math.ceil(measuredTextWidth(name || "欄位名稱", '16px "Noto Sans Mono CJK TC", "Noto Sans CJK TC", monospace', 12) + 34));
+  }
+  function tableNameWidth(name) {
+    return Math.max(150, Math.ceil(measuredTextWidth(String(name || "UNTITLED").toUpperCase(), '700 18.667px "Noto Sans CJK TC", "Noto Sans TC", sans-serif', 14) + 8));
+  }
 
   function render() {
     els.tables.innerHTML = state.tables.map((table, ti) => `
       <article class="table-block" data-table-id="${table.id}">
         <div class="table-topline">
-          <input class="table-name" value="${escapeHtml(table.name)}" aria-label="Table 名稱" maxlength="40" data-action="rename-table">
+          <input class="table-name" style="width:${tableNameWidth(table.name)}px" value="${escapeHtml(table.name)}" aria-label="Table 名稱" data-action="rename-table">
         </div>
         <div class="fields">
           ${table.fields.map((f, fi) => `
@@ -147,10 +159,10 @@
     }
     const tables = data.tables.map(table => ({
       id: String(table.id || uid()),
-      name: String(table.name || "UNTITLED").slice(0, 40),
+      name: String(table.name || "UNTITLED"),
       fields: Array.isArray(table.fields) ? table.fields.map(item => ({
         id: String(item.id || uid()),
-        name: String(item.name || "").slice(0, 40),
+        name: String(item.name || ""),
         primary: Boolean(item.primary)
       })) : []
     }));
@@ -407,11 +419,14 @@
     const tableNode = event.target.closest(".table-block");
     const table = state.tables.find(t => t.id === tableNode?.dataset.tableId);
     if (!table) return;
-    if (event.target.dataset.action === "rename-table") table.name = event.target.value;
+    if (event.target.dataset.action === "rename-table") {
+      table.name = event.target.value;
+      event.target.style.width = `${tableNameWidth(table.name)}px`;
+    }
     if (event.target.dataset.action === "rename-field") {
       const fieldNode = event.target.closest(".field");
       const f = table.fields.find(item => item.id === fieldNode.dataset.fieldId);
-      f.name = event.target.textContent.replace(/\n/g, "").slice(0, 40);
+      f.name = event.target.textContent.replace(/\n/g, "");
       if (event.target.textContent !== f.name) event.target.textContent = f.name;
       if (!f.name) event.target.innerHTML = "";
       fieldNode.style.width = `${fieldWidth(f.name)}px`;
@@ -423,7 +438,8 @@
   }
 
   function addTable(name) {
-    state.tables.push({ id: uid(), name: name.trim() || "UNTITLED", fields: [createField()] });
+    const normalizedName = name.replace(/\s+/g, " ").trim();
+    state.tables.push({ id: uid(), name: normalizedName || "UNTITLED", fields: [createField()] });
     render();
     requestAnimationFrame(() => {
       const last = els.tables.lastElementChild;
@@ -432,8 +448,14 @@
     });
   }
 
+  function resizeTableNameInput() {
+    els.tableName.style.height = "auto";
+    els.tableName.style.height = `${Math.min(180, Math.max(43, els.tableName.scrollHeight))}px`;
+  }
+
   function openTableDialog() {
     els.tableName.value = "";
+    resizeTableNameInput();
     els.tableDialog.showModal();
     requestAnimationFrame(() => els.tableName.focus());
   }
@@ -645,7 +667,7 @@
     state.tables.forEach(table => {
       const widths = table.fields.map(f => fieldWidth(f.name));
       const total = widths.reduce((a, b) => a + b, 0);
-      maxTableWidth = Math.max(maxTableWidth, total);
+      maxTableWidth = Math.max(maxTableWidth, total, tableNameWidth(table.name));
       tableBounds.push({ top: y + 24, bottom: y + 67, right: pad + total });
       tableParts.push(svgText(table.name.toUpperCase(), pad + 2, y + 17, { size: "14pt", weight: 700, family: "sans", anchor: "start" }));
       let x = pad;
@@ -731,7 +753,8 @@
   els.addTable.addEventListener("click", openTableDialog);
   els.emptyAdd.addEventListener("click", openTableDialog);
   els.refMode.addEventListener("click", () => toggleReferenceMode());
-  els.tableName.addEventListener("keydown", event => { if (event.key === "Enter") { event.preventDefault(); els.tableForm.requestSubmit(); } });
+  els.tableName.addEventListener("keydown", event => { if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); els.tableForm.requestSubmit(); } });
+  els.tableName.addEventListener("input", resizeTableNameInput);
   els.currentName.addEventListener("input", () => { currentFileName = safeClientName(els.currentName.value); });
   els.currentName.addEventListener("change", updateFileUI);
   els.saveButton.addEventListener("click", () => runFileAction(saveDiagram));
@@ -797,4 +820,5 @@
   updateFileUI();
   render();
   restoreLastFile();
+  if (document.fonts?.ready) document.fonts.ready.then(() => render());
 })();
