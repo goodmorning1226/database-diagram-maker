@@ -111,14 +111,14 @@
           ${table.fields.map((f, fi) => `
             <div class="field ${f.primary ? "primary" : ""}" style="width:${fieldWidth(f.name)}px" data-table-id="${table.id}" data-field-id="${f.id}">
               <div class="field-name" contenteditable="true" role="textbox" aria-label="欄位名稱" data-placeholder="欄位名稱" data-action="rename-field">${escapeHtml(f.name)}</div>
+              <button class="insert-field-after" type="button" title="在右側插入欄位" aria-label="在 ${escapeHtml(f.name || "此欄位")} 右側插入空欄位" data-action="insert-field-after">＋</button>
               <div class="field-controls">
                 <button title="左移" data-action="move-field-left" ${fi === 0 ? "disabled" : ""}>←</button>
                 <button title="Primary key" class="pk-control ${f.primary ? "active" : ""}" data-action="toggle-primary">PK</button>
                 <button title="右移" data-action="move-field-right" ${fi === table.fields.length - 1 ? "disabled" : ""}>→</button>
-                <button title="刪除欄位" data-action="delete-field">×</button>
+                <button title="${table.fields.length === 1 ? "Table 至少需要一個欄位" : "刪除欄位"}" data-action="delete-field" ${table.fields.length === 1 ? "disabled" : ""}>×</button>
               </div>
             </div>`).join("")}
-          <button class="add-field" title="新增欄位" data-action="add-field">＋</button>
         </div>
       </article>`).join("");
 
@@ -340,7 +340,7 @@
 
   function onTableClick(event) {
     const referenceFieldNode = event.target.closest(".field");
-    if (referenceMode && referenceFieldNode && !event.target.closest(".field-controls")) {
+    if (referenceMode && referenceFieldNode && !event.target.closest("button[data-action]")) {
       event.preventDefault();
       const point = { tableId: referenceFieldNode.dataset.tableId, fieldId: referenceFieldNode.dataset.fieldId };
       if (!referenceSource) {
@@ -365,17 +365,25 @@
     const fieldNode = button.closest(".field");
     const fieldIndex = fieldNode ? table.fields.findIndex(f => f.id === fieldNode.dataset.fieldId) : -1;
     const action = button.dataset.action;
+    let insertedFieldId = null;
 
-    if (action === "add-field") table.fields.push(createField());
+    if (action === "insert-field-after" && fieldIndex >= 0) {
+      const field = createField();
+      table.fields.splice(fieldIndex + 1, 0, field);
+      insertedFieldId = field.id;
+    }
     if (action === "move-field-left") mutateOrder(table.fields, fieldIndex, -1);
     if (action === "move-field-right") mutateOrder(table.fields, fieldIndex, 1);
     if (action === "toggle-primary") table.fields[fieldIndex].primary = !table.fields[fieldIndex].primary;
-    if (action === "delete-field") {
+    if (action === "delete-field" && table.fields.length > 1) {
       const id = table.fields[fieldIndex].id;
       state.references = state.references.filter(r => r.from.fieldId !== id && r.to.fieldId !== id);
       table.fields.splice(fieldIndex, 1);
     }
     render();
+    if (insertedFieldId) requestAnimationFrame(() => {
+      els.tables.querySelector(`[data-field-id="${insertedFieldId}"] .field-name`)?.focus();
+    });
   }
 
   function onTableListClick(event) {

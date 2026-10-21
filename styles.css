@@ -163,13 +163,23 @@ kbd { padding: 1px 5px; border: 1px solid var(--line); border-radius: 4px; backg
   text-decoration-thickness: 1.5px;
   text-underline-offset: 3px;
 }
+.insert-field-after {
+  position: absolute; top: -12px; right: -11px; z-index: 6;
+  width: 22px; height: 22px; padding: 0; display: grid; place-items: center;
+  border: 1px solid #171717; border-radius: 3px; background: var(--surface); color: #171717;
+  box-shadow: 0 2px 7px rgba(0,0,0,.12); cursor: pointer; font: 15px/1 var(--sans);
+  opacity: 0; visibility: hidden; transform: translateY(3px); pointer-events: none;
+  transition: opacity .12s, transform .12s, visibility .12s, background .12s, color .12s;
+}
+.field:hover .insert-field-after, .field:focus-within .insert-field-after, .insert-field-after:focus-visible {
+  opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto;
+}
+.insert-field-after:hover, .insert-field-after:focus-visible { background: var(--ink); color: white; outline: none; }
 .field-controls { position: absolute; left: 50%; bottom: -28px; z-index: 4; display: none; transform: translateX(-50%); gap: 2px; padding: 3px; border: 1px solid var(--line); border-radius: 5px; background: var(--surface); box-shadow: 0 4px 12px rgba(0,0,0,.09); white-space: nowrap; }
 .field:focus-within .field-controls, .field:hover .field-controls { display: flex; }
 .field-controls button { width: 23px; height: 20px; padding: 0; border: 0; border-radius: 3px; background: transparent; color: var(--muted); cursor: pointer; font-size: 10px; }
 .field-controls button:hover { background: #eeece7; color: var(--ink); }
 .field-controls .pk-control.active { background: var(--ink); color: white; }
-.add-field { min-width: 43px; border: 0; border-left: 1.5px dashed #8f8c85; background: #f1f0ed; color: #6d6961; cursor: pointer; font-size: 19px; }
-.add-field:hover { background: #e1e0dd; color: var(--ink); }
 
 .connections { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; overflow: visible; pointer-events: none; color: #111; }
 .connection-path { fill: none; stroke: currentColor; stroke-width: 1.65; marker-end: url(#arrowhead); vector-effect: non-scaling-stroke; }
